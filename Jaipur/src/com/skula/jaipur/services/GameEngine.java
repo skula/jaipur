@@ -8,20 +8,20 @@ import com.skula.jaipur.enums.Card;
 import com.skula.jaipur.models.Player;
 
 public class GameEngine {
-	private static final int TOKEN_DIAMANT = 0;
-	private static final int TOKEN_GOLD = 1;
-	private static final int TOKEN_SILVER = 2;
-	private static final int TOKEN_FABRICS = 3;
-	private static final int TOKEN_SPICES = 4;
-	private static final int TOKEN_LEATHER = 5;
+	public static final int TOKEN_DIAMANT = 0;
+	public static final int TOKEN_GOLD = 1;
+	public static final int TOKEN_SILVER = 2;
+	public static final int TOKEN_FABRICS = 3;
+	public static final int TOKEN_SPICES = 4;
+	public static final int TOKEN_LEATHER = 5;
 
 	private int token;
 	private List<Card> deck;
 	private Card[] market;
 	private Player[] players;
 
-	private List<List<Integer>> wareToken;
-	private List<List<Integer>> bonusToken;
+	private List<List<Integer>> wareTokens;
+	private List<List<Integer>> bonusTokens;
 
 	private List<Integer> selCardsHand;
 	private List<Integer> selCardsMarket;
@@ -46,13 +46,24 @@ public class GameEngine {
 		this.players = new Player[2];
 		this.players[0] = new Player();
 		this.players[1] = new Player();
+
 		for (int i = 0; i < 5; i++) {
-			players[0].addCard(deck.remove(0));
-			players[1].addCard(deck.remove(0));
+			Card c = deck.remove(0);
+			if (c == Card.CAMEL) {
+				players[0].addCamel(1);
+			} else {
+				players[0].addCard(deck.remove(0));
+			}
+			c = deck.remove(0);
+			if (c == Card.CAMEL) {
+				players[1].addCamel(1);
+			} else {
+				players[1].addCard(deck.remove(0));
+			}
 		}
 
 		// jetons marchandises
-		this.wareToken = new ArrayList<List<Integer>>();
+		this.wareTokens = new ArrayList<List<Integer>>();
 		// - diamant
 		List<Integer> tmp = new ArrayList<Integer>();
 		tmp.add(7);
@@ -60,7 +71,7 @@ public class GameEngine {
 		tmp.add(5);
 		tmp.add(5);
 		tmp.add(5);
-		wareToken.add(tmp);
+		wareTokens.add(tmp);
 		// - or
 		tmp = new ArrayList<Integer>();
 		tmp.add(6);
@@ -68,13 +79,13 @@ public class GameEngine {
 		tmp.add(5);
 		tmp.add(5);
 		tmp.add(5);
-		wareToken.add(tmp);
+		wareTokens.add(tmp);
 		// - argent
 		tmp = new ArrayList<Integer>();
 		for (int i = 0; i < 5; i++) {
 			tmp.add(5);
 		}
-		wareToken.add(tmp);
+		wareTokens.add(tmp);
 		// - tissus
 		tmp = new ArrayList<Integer>();
 		tmp.add(5);
@@ -84,7 +95,7 @@ public class GameEngine {
 		tmp.add(2);
 		tmp.add(1);
 		tmp.add(1);
-		wareToken.add(tmp);
+		wareTokens.add(tmp);
 		// - epices
 		tmp = new ArrayList<Integer>();
 		tmp.add(5);
@@ -94,7 +105,7 @@ public class GameEngine {
 		tmp.add(2);
 		tmp.add(1);
 		tmp.add(1);
-		wareToken.add(tmp);
+		wareTokens.add(tmp);
 		// - cuir
 		tmp = new ArrayList<Integer>();
 		tmp.add(4);
@@ -103,10 +114,10 @@ public class GameEngine {
 		for (int i = 0; i < 6; i++) {
 			tmp.add(1);
 		}
-		wareToken.add(tmp);
+		wareTokens.add(tmp);
 
 		// jetons bonus
-		this.bonusToken = new ArrayList<List<Integer>>();
+		this.bonusTokens = new ArrayList<List<Integer>>();
 		// - 3 cartes
 		tmp = new ArrayList<Integer>();
 		for (int i = 0; i < 2; i++) {
@@ -114,7 +125,7 @@ public class GameEngine {
 			tmp.add(2);
 			tmp.add(3);
 		}
-		bonusToken.add(tmp);
+		bonusTokens.add(tmp);
 		Collections.shuffle(tmp);
 		// - 4 cartes
 		tmp = new ArrayList<Integer>();
@@ -123,7 +134,7 @@ public class GameEngine {
 			tmp.add(5);
 			tmp.add(6);
 		}
-		bonusToken.add(tmp);
+		bonusTokens.add(tmp);
 		Collections.shuffle(tmp);
 		// - 5 cartes
 		tmp = new ArrayList<Integer>();
@@ -133,24 +144,46 @@ public class GameEngine {
 			tmp.add(10);
 		}
 		Collections.shuffle(tmp);
-		bonusToken.add(tmp);
+		bonusTokens.add(tmp);
 
 		this.selCardsHand = new ArrayList<Integer>();
 		this.selCardsMarket = new ArrayList<Integer>();
 	}
 
 	public boolean canBuy() {
-		// TODO: gerer les chameaux
+		if (selCardsMarket.size() == 0) {
+			return false;
+		}
+
+		if (selCardsMarket.size() > 1) {
+			for (Integer i : selCardsMarket) {
+				if (market[i] != Card.CAMEL) {
+					return false;
+				}
+			}
+			return true;
+		}
+
 		return players[token].getHand().size() < 7;
 	}
 
 	public void buy() {
-		// TODO: gerer les chameaux
-		players[token].getHand().add(market[selCardsMarket.get(0)]);
-		market[selCardsMarket.get(0)] = null;
+		if (market[selCardsMarket.get(0)] == Card.CAMEL) {
+			for (Integer i : selCardsMarket) {
+				players[token].addCamel(1);
+				market[i] = null;
+			}
+		} else {
+			players[token].getHand().add(market[selCardsMarket.get(0)]);
+			market[selCardsMarket.get(0)] = null;
+		}
 	}
 
 	public boolean canSale() {
+		if (selCardsHand.isEmpty()) {
+			return false;
+		}
+
 		// si cartes differentes
 		List<Card> hand = players[token].getHand();
 		Card c = hand.get(selCardsHand.get(0));
@@ -169,7 +202,6 @@ public class GameEngine {
 		return true;
 	}
 
-	// TODO: a continuer
 	public void sale() {
 		Card c = players[token].getHand().get(selCardsHand.get(0));
 		int n = selCardsHand.size();
@@ -198,15 +230,30 @@ public class GameEngine {
 			break;
 		}
 
-		if (wareToken.get(ware).size() < n) {
+		// prendre jetons marchandises
+		int tmp = wareTokens.get(ware).size() < n ? wareTokens.get(ware).size() : n;
+		for (int i = 0; i < tmp; i++) {
+			players[token].addPoints(wareTokens.get(ware).remove(0));
+		}
 
-		} else {
-
+		// prendre jetons bonus
+		if (tmp >= 5) {
+			if (!bonusTokens.get(0).isEmpty()) {
+				players[token].addPoints(bonusTokens.get(0).remove(0));
+			}
+		} else if (tmp == 4) {
+			if (!bonusTokens.get(1).isEmpty()) {
+				players[token].addPoints(bonusTokens.get(1).remove(0));
+			}
+		} else if (tmp == 3) {
+			if (!bonusTokens.get(2).isEmpty()) {
+				players[token].addPoints(bonusTokens.get(2).remove(0));
+			}
 		}
 	}
 
 	public boolean canTrade() {
-		if (selCardsHand.size() < 2) {
+		if (selCardsHand.size() < 2 || selCardsMarket.size() < 2) {
 			return false;
 		}
 
@@ -224,15 +271,21 @@ public class GameEngine {
 		return true;
 	}
 
-	// TODO: todo
 	public void trade() {
+		Card[] tmp = market;
+		for (int i = 0; i < selCardsHand.size(); i++) {
+			market[selCardsMarket.get(i)] = players[token].getHand().get(selCardsHand.get(i));
+		}
 
+		for (int i = 0; i < selCardsMarket.size(); i++) {
+			players[token].setCard(selCardsHand.get(i), tmp[selCardsMarket.get(i)]);
+		}
 	}
 
 	public boolean isEndOfRound() {
 		// si 3 type de marchandises vides
 		int cpt = 0;
-		for (List<Integer> l : wareToken) {
+		for (List<Integer> l : wareTokens) {
 			if (l.size() == 0) {
 				cpt++;
 			}
@@ -251,6 +304,9 @@ public class GameEngine {
 	}
 
 	public void nextPlayer() {
+		selCardsHand.clear();
+		selCardsMarket.clear();
+
 		token = token == 0 ? 1 : 0;
 
 		for (int i = 0; i < 5; i++) {
@@ -258,5 +314,57 @@ public class GameEngine {
 				market[i] = deck.remove(0);
 			}
 		}
+	}
+
+	public Player getCurrentPlayer() {
+		return players[token];
+	}
+
+	public List<Card> getDeck() {
+		return deck;
+	}
+
+	public void setDeck(List<Card> deck) {
+		this.deck = deck;
+	}
+
+	public Card[] getMarket() {
+		return market;
+	}
+
+	public void setMarket(Card[] market) {
+		this.market = market;
+	}
+
+	public List<List<Integer>> getWareTokens() {
+		return wareTokens;
+	}
+
+	public void setWareTokens(List<List<Integer>> wareTokens) {
+		this.wareTokens = wareTokens;
+	}
+
+	public List<List<Integer>> getBonusTokens() {
+		return bonusTokens;
+	}
+
+	public void setBonusTokens(List<List<Integer>> bonusTokens) {
+		this.bonusTokens = bonusTokens;
+	}
+
+	public List<Integer> getSelCardsHand() {
+		return selCardsHand;
+	}
+
+	public void setSelCardsHand(List<Integer> selCardsHand) {
+		this.selCardsHand = selCardsHand;
+	}
+
+	public List<Integer> getSelCardsMarket() {
+		return selCardsMarket;
+	}
+
+	public void setSelCardsMarket(List<Integer> selCardsMarket) {
+		this.selCardsMarket = selCardsMarket;
 	}
 }
