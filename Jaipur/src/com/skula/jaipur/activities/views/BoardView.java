@@ -9,31 +9,11 @@ import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.skula.jaipur.cnst.Cnst;
 import com.skula.jaipur.services.Drawer;
 import com.skula.jaipur.services.GameEngine;
 
 public class BoardView extends View {
-	public static final int AREA_NONE = -1;
-	public static final int AREA_MARKET_1 = 0;
-	public static final int AREA_MARKET_2 = 1;
-	public static final int AREA_MARKET_3 = 2;
-	public static final int AREA_MARKET_4 = 3;
-	public static final int AREA_MARKET_5 = 4;
-	
-	public static final int AREA_HAND_1 = 5;
-	public static final int AREA_HAND_2 = 6;
-	public static final int AREA_HAND_3 = 7;
-	public static final int AREA_HAND_4 = 8;
-	public static final int AREA_HAND_5 = 9;
-	public static final int AREA_HAND_6 = 10;
-	public static final int AREA_HAND_7 = 11;
-	
-	public static final int AREA_CAMEL = 12;
-	
-	public static final int AREA_BTN_SALE = 13;
-	public static final int AREA_BTN_TRADE = 14;
-	public static final int AREA_BTN_BUY = 15;
-
 	private Paint paint;
 	private Resources res;
 	private Drawer drawer;
@@ -57,7 +37,8 @@ public class BoardView extends View {
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
 			int area = getArea(x, y);
-			msg = area+"";
+			msg = area + "";
+			engine.process(area);
 			break;
 		case MotionEvent.ACTION_MOVE:
 			break;
@@ -68,7 +49,7 @@ public class BoardView extends View {
 		return true;
 	}
 	
-	public int getArea(int xp, int yp){
+	private int getArea(int xp, int yp){
 		// marche
 		int x = Drawer.X0_MARKET;
 		int dx = Drawer.CARD_WIDTH + 10;
@@ -80,15 +61,15 @@ public class BoardView extends View {
 				if(destRect.contains(xp, yp)){
 					switch(i){
 					case 0:
-						return AREA_MARKET_1;
+						return Cnst.AREA_MARKET_1;
 					case 1:
-						return AREA_MARKET_2;
+						return Cnst.AREA_MARKET_2;
 					case 2:
-						return AREA_MARKET_3;
+						return Cnst.AREA_MARKET_3;
 					case 3:
-						return AREA_MARKET_4;
+						return Cnst.AREA_MARKET_4;
 					case 4:
-						return AREA_MARKET_5;
+						return Cnst.AREA_MARKET_5;
 					default:
 						break;
 					}
@@ -107,19 +88,19 @@ public class BoardView extends View {
 			if(destRect.contains(xp, yp)){
 				switch (i) {
 				case 0:
-					return AREA_HAND_1;
+					return Cnst.AREA_HAND_1;
 				case 1:
-					return AREA_HAND_2;
+					return Cnst.AREA_HAND_2;
 				case 2:
-					return AREA_HAND_3;
+					return Cnst.AREA_HAND_3;
 				case 3:
-					return AREA_HAND_4;
+					return Cnst.AREA_HAND_4;
 				case 4:
-					return AREA_HAND_5;
+					return Cnst.AREA_HAND_5;
 				case 5:
-					return AREA_HAND_6;
+					return Cnst.AREA_HAND_6;
 				case 6:
-					return AREA_HAND_7;
+					return Cnst.AREA_HAND_7;
 				}
 			}
 			x += dx;
@@ -128,15 +109,21 @@ public class BoardView extends View {
 		// chameaux
 		x = Drawer.X0_HAND + 7 * dx + 30;
 		if (engine.getCurrentPlayer().getnCamels() > 1) {
-			destRect = new Rect(x, Drawer.Y0_HAND, x + Drawer.CARD_WIDTH, Drawer.Y0_HAND + Drawer.CARD_HEIGHT);
+			// ajouter chameau
+			destRect = new Rect(x, Drawer.Y0_HAND, x + Drawer.CARD_WIDTH, Drawer.Y0_HAND + Drawer.CARD_HEIGHT/2);
 			if(destRect.contains(xp, yp)){
-				return AREA_CAMEL;
+				return Cnst.AREA_CAMEL_ADD;
+			}
+			// enlever chameau
+			destRect = new Rect(x, Drawer.Y0_HAND + Drawer.CARD_HEIGHT/2, x + Drawer.CARD_WIDTH, Drawer.Y0_HAND + Drawer.CARD_HEIGHT);
+			if(destRect.contains(xp, yp)){
+				return Cnst.AREA_CAMEL_REMOVE;
 			}
 		}
 		
 		// boutons
 		
-		return AREA_NONE;
+		return Cnst.AREA_NONE;
 	}
 
 	@Override

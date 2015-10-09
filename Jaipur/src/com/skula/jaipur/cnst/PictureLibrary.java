@@ -25,6 +25,8 @@ public class PictureLibrary{
 		this.map.put(R.drawable.card_camel, BitmapFactory.decodeResource(res, R.drawable.card_camel));
 		this.map.put(R.drawable.card_back, BitmapFactory.decodeResource(res, R.drawable.card_back));
 		
+		this.map.put(R.drawable.card_sel, BitmapFactory.decodeResource(res, R.drawable.card_sel));
+		
 		this.map.put(R.drawable.token_diamant_7, BitmapFactory.decodeResource(res, R.drawable.token_diamant_7));
 		this.map.put(R.drawable.token_diamant_5, BitmapFactory.decodeResource(res, R.drawable.token_diamant_5));
 		this.map.put(R.drawable.token_gold_6, BitmapFactory.decodeResource(res, R.drawable.token_gold_6));

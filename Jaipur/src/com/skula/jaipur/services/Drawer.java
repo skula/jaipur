@@ -163,7 +163,6 @@ public class Drawer {
 		}
 	}
 
-	// TODO: faire cadre cartes selectionnées
 	private void drawMarket(Canvas c) {
 		int x = X0_MARKET;
 		int dx = CARD_WIDTH + 10;
@@ -197,29 +196,33 @@ public class Drawer {
 					break;
 				}
 			}
+
+			if (engine.getSelCardsMarket().contains(i)) {
+				c.drawBitmap(lib.get(R.drawable.card_sel), CARD_RECT, destRect, paint);
+			}
 			x += dx;
 		}
 
 		x += 30;
 		int n = engine.getDeck().size();
-		n = n>5?5:n;
+		n = n > 5 ? 5 : n;
 		for (int i = 0; i < n; i++) {
 			destRect = new Rect(x, y, x + CARD_WIDTH, y + CARD_HEIGHT);
 			c.drawBitmap(lib.get(R.drawable.card_back), CARD_RECT, destRect, paint);
-			x+=5;
+			x += 5;
 		}
 	}
 
-	// TODO: faire cadre cartes selectionnées
 	private void drawPlayers(Canvas c) {
 		int x = X0_HAND;
 		int dx = CARD_WIDTH + 10;
 		int y = Y0_HAND;
 
 		Rect destRect = null;
-		for (Card i : engine.getCurrentPlayer().getHand()) {
+		List<Card> hand = engine.getCurrentPlayer().getHand();
+		for (int i = 0; i < hand.size(); i++) {
 			destRect = new Rect(x, y, x + CARD_WIDTH, y + CARD_HEIGHT);
-			switch (i) {
+			switch (hand.get(i)) {
 			case DIAMANT:
 				c.drawBitmap(lib.get(R.drawable.card_diamant), CARD_RECT, destRect, paint);
 				break;
@@ -242,6 +245,10 @@ public class Drawer {
 				c.drawBitmap(lib.get(R.drawable.card_camel), CARD_RECT, destRect, paint);
 				break;
 			}
+
+			if (engine.getSelCardsHand().contains(i)) {
+				c.drawBitmap(lib.get(R.drawable.card_sel), CARD_RECT, destRect, paint);
+			}
 			x += dx;
 		}
 
@@ -249,6 +256,11 @@ public class Drawer {
 		if (engine.getCurrentPlayer().getnCamels() > 1) {
 			destRect = new Rect(x, Y0_HAND, x + CARD_WIDTH, Y0_HAND + CARD_HEIGHT);
 			c.drawBitmap(lib.get(R.drawable.card_camel), CARD_RECT, destRect, paint);
+
+			if (engine.getSelCamels() > 0) {
+				c.drawBitmap(lib.get(R.drawable.card_sel), CARD_RECT, destRect, paint);
+			}
+
 			paint.setColor(Color.BLACK);
 			paint.setTextSize(40f);
 			x += 50;
@@ -274,6 +286,20 @@ public class Drawer {
 
 	// TODO: a faire
 	public void drawButtons(Canvas c) {
+		if (!engine.isEndOfTurn()) {
+			if (engine.canBuy()) {
 
+			}
+
+			if (engine.canSale()) {
+
+			}
+
+			if (engine.canTrade()) {
+
+			}
+		} else {
+
+		}
 	}
 }

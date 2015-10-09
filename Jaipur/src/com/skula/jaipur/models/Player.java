@@ -24,10 +24,10 @@ public class Player {
 		this.score += points;
 	}
 
-	public void setCard(int i, Card card){
+	public void setCard(int i, Card card) {
 		hand.set(i, card);
 	}
-	
+
 	public void addCard(Card card) {
 		this.hand.add(card);
 	}
@@ -44,10 +44,10 @@ public class Player {
 		this.hand = hand;
 	}
 
-	public void addCamel(int n){
-		this.nCamels+=n;
+	public void addCamel(int n) {
+		this.nCamels += n;
 	}
-	
+
 	public int getnCamels() {
 		return nCamels;
 	}

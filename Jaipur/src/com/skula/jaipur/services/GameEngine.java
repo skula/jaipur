@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.skula.jaipur.cnst.Cnst;
 import com.skula.jaipur.enums.Card;
 import com.skula.jaipur.models.Player;
 
@@ -25,9 +26,13 @@ public class GameEngine {
 
 	private List<Integer> selCardsHand;
 	private List<Integer> selCardsMarket;
+	private int selCamels;
+
+	private boolean endOfTurn;
 
 	public GameEngine() {
 		initRound();
+		this.endOfTurn = false;
 	}
 
 	private void initRound() {
@@ -148,8 +153,10 @@ public class GameEngine {
 
 		this.selCardsHand = new ArrayList<Integer>();
 		this.selCardsMarket = new ArrayList<Integer>();
+		this.selCamels = 0;
 	}
 
+	// TODO: gerer les chameaux
 	public boolean canBuy() {
 		if (selCardsMarket.size() == 0) {
 			return false;
@@ -167,7 +174,7 @@ public class GameEngine {
 		return players[token].getHand().size() < 7;
 	}
 
-	public void buy() {
+	private void buy() {
 		if (market[selCardsMarket.get(0)] == Card.CAMEL) {
 			for (Integer i : selCardsMarket) {
 				players[token].addCamel(1);
@@ -181,6 +188,10 @@ public class GameEngine {
 
 	public boolean canSale() {
 		if (selCardsHand.isEmpty()) {
+			return false;
+		}
+
+		if (selCamels > 0) {
 			return false;
 		}
 
@@ -202,7 +213,7 @@ public class GameEngine {
 		return true;
 	}
 
-	public void sale() {
+	private void sale() {
 		Card c = players[token].getHand().get(selCardsHand.get(0));
 		int n = selCardsHand.size();
 		int ware = 0;
@@ -252,6 +263,7 @@ public class GameEngine {
 		}
 	}
 
+	// TODO: gerer chameaux
 	public boolean canTrade() {
 		if (selCardsHand.size() < 2 || selCardsMarket.size() < 2) {
 			return false;
@@ -271,7 +283,8 @@ public class GameEngine {
 		return true;
 	}
 
-	public void trade() {
+	// TODO: gerer chameaux
+	private void trade() {
 		Card[] tmp = market;
 		for (int i = 0; i < selCardsHand.size(); i++) {
 			market[selCardsMarket.get(i)] = players[token].getHand().get(selCardsHand.get(i));
@@ -280,6 +293,18 @@ public class GameEngine {
 		for (int i = 0; i < selCardsMarket.size(); i++) {
 			players[token].setCard(selCardsHand.get(i), tmp[selCardsMarket.get(i)]);
 		}
+	}
+
+	public int getWinner() {
+		if (players[0].getnSeals() == 2) {
+			return 0;
+		} else {
+			return 1;
+		}
+	}
+
+	public boolean isEndOfGame() {
+		return players[0].getnSeals() == 2 || players[1].getnSeals() == 2;
 	}
 
 	public boolean isEndOfRound() {
@@ -303,9 +328,15 @@ public class GameEngine {
 		return false;
 	}
 
-	public void nextPlayer() {
+	public boolean isEndOfTurn() {
+		return endOfTurn;
+	}
+
+	private void nextPlayer() {
 		selCardsHand.clear();
 		selCardsMarket.clear();
+		selCamels = 0;
+		endOfTurn = false;
 
 		token = token == 0 ? 1 : 0;
 
@@ -313,6 +344,138 @@ public class GameEngine {
 			if (market[i] == null) {
 				market[i] = deck.remove(0);
 			}
+		}
+	}
+
+	private boolean isSelCamels() {
+		for (Integer i : selCardsMarket) {
+			if (market[i] != Card.CAMEL) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private void selAllCamels() {
+		for (int i = 0; i < 5; i++) {
+			if (market[i] == Card.CAMEL) {
+				selCardsMarket.add(i);
+			}
+		}
+	}
+
+	private void handleSelMarket(int i) {
+		if (selCardsMarket.isEmpty()) {
+			if (market[i] == Card.CAMEL) {
+				selAllCamels();
+			} else {
+				if (selCardsMarket.contains(i)) {
+					selCardsMarket.remove(new Integer(i));
+				} else {
+					selCardsMarket.add(i);
+				}
+			}
+		} else {
+			if (isSelCamels()) {
+				if (market[i] == Card.CAMEL) {
+					if (selCardsMarket.contains(i)) {
+						selCardsMarket.clear();
+					} else {
+						selCardsMarket.add(i);
+					}
+				}
+			} else {
+				if (market[i] != Card.CAMEL) {
+					if (selCardsMarket.contains(i)) {
+						selCardsMarket.remove(new Integer(i));
+					} else {
+						selCardsMarket.add(i);
+					}
+				}
+			}
+		}
+
+	}
+
+	private void handleSelHand(int i) {
+		if (selCardsHand.contains(i)) {
+			selCardsHand.remove(new Integer(i));
+		} else {
+			selCardsHand.add(i);
+		}
+	}
+
+	private void handleSelCamel(int i) {
+		if (i == 1) {
+			if (selCamels < players[token].getnCamels()) {
+				selCamels++;
+			}
+		} else {
+			selCamels = selCamels == 0 ? selCamels : selCamels - 1;
+		}
+	}
+
+	public void process(int area) {
+		switch (area) {
+		case Cnst.AREA_MARKET_1:
+			handleSelMarket(0);
+			break;
+		case Cnst.AREA_MARKET_2:
+			handleSelMarket(1);
+			break;
+		case Cnst.AREA_MARKET_3:
+			handleSelMarket(2);
+			break;
+		case Cnst.AREA_MARKET_4:
+			handleSelMarket(3);
+			break;
+		case Cnst.AREA_MARKET_5:
+			handleSelMarket(4);
+			break;
+		case Cnst.AREA_HAND_1:
+			handleSelHand(0);
+			break;
+		case Cnst.AREA_HAND_2:
+			handleSelHand(1);
+			break;
+		case Cnst.AREA_HAND_3:
+			handleSelHand(2);
+			break;
+		case Cnst.AREA_HAND_4:
+			handleSelHand(3);
+			break;
+		case Cnst.AREA_HAND_5:
+			handleSelHand(4);
+			break;
+		case Cnst.AREA_HAND_6:
+			handleSelHand(5);
+			break;
+		case Cnst.AREA_HAND_7:
+			handleSelHand(6);
+			break;
+		case Cnst.AREA_CAMEL_ADD:
+			handleSelCamel(1);
+			break;
+		case Cnst.AREA_CAMEL_REMOVE:
+			handleSelCamel(-1);
+			break;
+		case Cnst.AREA_BTN_SALE:
+			sale();
+			endOfTurn = true;
+			break;
+		case Cnst.AREA_BTN_TRADE:
+			trade();
+			endOfTurn = true;
+			break;
+		case Cnst.AREA_BTN_BUY:
+			buy();
+			endOfTurn = true;
+			break;
+		case Cnst.AREA_BTN_PLAY:
+			nextPlayer();
+			break;
+		default:
+			break;
 		}
 	}
 
@@ -367,12 +530,20 @@ public class GameEngine {
 	public void setSelCardsMarket(List<Integer> selCardsMarket) {
 		this.selCardsMarket = selCardsMarket;
 	}
-	
-	public int getToken(){
+
+	public int getToken() {
 		return token;
 	}
-	
-	public Player[] getPlayers(){
+
+	public Player[] getPlayers() {
 		return players;
+	}
+
+	public int getSelCamels() {
+		return selCamels;
+	}
+
+	public void setSelCamels(int selCamels) {
+		this.selCamels = selCamels;
 	}
 }
