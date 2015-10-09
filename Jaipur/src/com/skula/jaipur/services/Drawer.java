@@ -17,7 +17,7 @@ public class Drawer {
 	public static final int Y0_TOKEN = 100;
 
 	public static final int X0_MARKET = 550;
-	private static final int Y0_MARKET = 350;
+	public static final int Y0_MARKET = 350;
 
 	public static final int X0_HAND = 350;
 	public static final int Y0_HAND = 550;
@@ -42,7 +42,7 @@ public class Drawer {
 		drawTokens(c);
 		drawMarket(c);
 		drawPlayers(c);
-		// drawButtons(c);
+		drawButtons(c);
 
 		paint.setColor(Color.RED);
 		paint.setTextSize(33f);
@@ -56,80 +56,24 @@ public class Drawer {
 
 	private void drawTokens(Canvas c) {
 		int x = X0_TOKEN;
-		int dx = 20;
+
 		int y = Y0_TOKEN;
 		int dy = TOKEN_SIZE + 10;
 
 		// jetons de marchandises
 		int cpt = 0;
-		int bonusCpt = 0;
 		Rect destRect = null;
-		for (List<Integer> l : engine.getWareTokens()) {
-			x = X0_TOKEN;
 
-			for (int i = l.size() - 1; i >= 0; i--) {
-				destRect = new Rect(x, y, x + TOKEN_SIZE, y + TOKEN_SIZE);
-				switch (cpt) {
-				case GameEngine.TOKEN_DIAMANT:
-					if (l.get(i) == 7) {
-						c.drawBitmap(lib.get(R.drawable.token_diamant_7), TOKEN_RECT, destRect, paint);
-					} else {
-						c.drawBitmap(lib.get(R.drawable.token_diamant_5), TOKEN_RECT, destRect, paint);
-					}
-					break;
-				case GameEngine.TOKEN_GOLD:
-					if (l.get(i) == 6) {
-						c.drawBitmap(lib.get(R.drawable.token_gold_6), TOKEN_RECT, destRect, paint);
-					} else {
-						c.drawBitmap(lib.get(R.drawable.token_gold_5), TOKEN_RECT, destRect, paint);
-					}
-					break;
-				case GameEngine.TOKEN_SILVER:
-					c.drawBitmap(lib.get(R.drawable.token_silver_5), TOKEN_RECT, destRect, paint);
-					break;
-				case GameEngine.TOKEN_FABRICS:
-					if (l.get(i) == 5) {
-						c.drawBitmap(lib.get(R.drawable.token_fabrics_5), TOKEN_RECT, destRect, paint);
-					} else if (l.get(i) == 3) {
-						c.drawBitmap(lib.get(R.drawable.token_fabrics_3), TOKEN_RECT, destRect, paint);
-					} else if (l.get(i) == 2) {
-						c.drawBitmap(lib.get(R.drawable.token_fabrics_2), TOKEN_RECT, destRect, paint);
-					} else {
-						c.drawBitmap(lib.get(R.drawable.token_fabrics_1), TOKEN_RECT, destRect, paint);
-					}
-					break;
-				case GameEngine.TOKEN_SPICES:
-					if (l.get(i) == 5) {
-						c.drawBitmap(lib.get(R.drawable.token_spices_5), TOKEN_RECT, destRect, paint);
-					} else if (l.get(i) == 3) {
-						c.drawBitmap(lib.get(R.drawable.token_spices_3), TOKEN_RECT, destRect, paint);
-					} else if (l.get(i) == 2) {
-						c.drawBitmap(lib.get(R.drawable.token_spices_2), TOKEN_RECT, destRect, paint);
-					} else {
-						c.drawBitmap(lib.get(R.drawable.token_spices_1), TOKEN_RECT, destRect, paint);
-					}
-					break;
-				case GameEngine.TOKEN_LEATHER:
-					if (l.get(i) == 4) {
-						c.drawBitmap(lib.get(R.drawable.token_leather_4), TOKEN_RECT, destRect, paint);
-					} else if (l.get(i) == 3) {
-						c.drawBitmap(lib.get(R.drawable.token_leather_3), TOKEN_RECT, destRect, paint);
-					} else if (l.get(i) == 2) {
-						c.drawBitmap(lib.get(R.drawable.token_leather_2), TOKEN_RECT, destRect, paint);
-					} else {
-						c.drawBitmap(lib.get(R.drawable.token_leather_1), TOKEN_RECT, destRect, paint);
-					}
-					break;
-				}
-				x += dx;
-			}
-
-			y += dy;
-			cpt++;
-			bonusCpt++;
-		}
-
+		drawTokensColumn(c, x, y, 0, engine.getWareTokens().get(0));
+		y += dy;
 		x = X0_TOKEN;
+		drawTokensColumn(c, x, y, 1, engine.getWareTokens().get(1));
+		y += dy;
+		x = X0_TOKEN;
+		drawTokensColumn(c, x, y, 2, engine.getWareTokens().get(2));
+		y += dy;
+		x = X0_TOKEN;
+
 		// jetons de bonus
 		if (!engine.getBonusTokens().get(0).isEmpty()) {
 			destRect = new Rect(x, y, x + TOKEN_SIZE, y + TOKEN_SIZE);
@@ -144,6 +88,78 @@ public class Drawer {
 		if (!engine.getBonusTokens().get(2).isEmpty()) {
 			destRect = new Rect(x, y, x + TOKEN_SIZE, y + TOKEN_SIZE);
 			c.drawBitmap(lib.get(R.drawable.token_bonus_5), TOKEN_RECT, destRect, paint);
+		}
+
+		// jetons de marchandises
+		y += dy;
+		x = X0_TOKEN;
+		drawTokensColumn(c, x, y, 3, engine.getWareTokens().get(3));
+		y += dy;
+		x = X0_TOKEN;
+		drawTokensColumn(c, x, y, 4, engine.getWareTokens().get(4));
+		y += dy;
+		x = X0_TOKEN;
+		drawTokensColumn(c, x, y, 5, engine.getWareTokens().get(5));
+	}
+
+	private void drawTokensColumn(Canvas c, int x, int y, int n, List<Integer> l) {
+		int dx = 20;
+		Rect destRect = null;
+		for (int i = l.size() - 1; i >= 0; i--) {
+			destRect = new Rect(x, y, x + TOKEN_SIZE, y + TOKEN_SIZE);
+			switch (n) {
+			case GameEngine.TOKEN_DIAMANT:
+				if (l.get(i) == 7) {
+					c.drawBitmap(lib.get(R.drawable.token_diamant_7), TOKEN_RECT, destRect, paint);
+				} else {
+					c.drawBitmap(lib.get(R.drawable.token_diamant_5), TOKEN_RECT, destRect, paint);
+				}
+				break;
+			case GameEngine.TOKEN_GOLD:
+				if (l.get(i) == 6) {
+					c.drawBitmap(lib.get(R.drawable.token_gold_6), TOKEN_RECT, destRect, paint);
+				} else {
+					c.drawBitmap(lib.get(R.drawable.token_gold_5), TOKEN_RECT, destRect, paint);
+				}
+				break;
+			case GameEngine.TOKEN_SILVER:
+				c.drawBitmap(lib.get(R.drawable.token_silver_5), TOKEN_RECT, destRect, paint);
+				break;
+			case GameEngine.TOKEN_FABRICS:
+				if (l.get(i) == 5) {
+					c.drawBitmap(lib.get(R.drawable.token_fabrics_5), TOKEN_RECT, destRect, paint);
+				} else if (l.get(i) == 3) {
+					c.drawBitmap(lib.get(R.drawable.token_fabrics_3), TOKEN_RECT, destRect, paint);
+				} else if (l.get(i) == 2) {
+					c.drawBitmap(lib.get(R.drawable.token_fabrics_2), TOKEN_RECT, destRect, paint);
+				} else {
+					c.drawBitmap(lib.get(R.drawable.token_fabrics_1), TOKEN_RECT, destRect, paint);
+				}
+				break;
+			case GameEngine.TOKEN_SPICES:
+				if (l.get(i) == 5) {
+					c.drawBitmap(lib.get(R.drawable.token_spices_5), TOKEN_RECT, destRect, paint);
+				} else if (l.get(i) == 3) {
+					c.drawBitmap(lib.get(R.drawable.token_spices_3), TOKEN_RECT, destRect, paint);
+				} else if (l.get(i) == 2) {
+					c.drawBitmap(lib.get(R.drawable.token_spices_2), TOKEN_RECT, destRect, paint);
+				} else {
+					c.drawBitmap(lib.get(R.drawable.token_spices_1), TOKEN_RECT, destRect, paint);
+				}
+				break;
+			case GameEngine.TOKEN_LEATHER:
+				if (l.get(i) == 4) {
+					c.drawBitmap(lib.get(R.drawable.token_leather_4), TOKEN_RECT, destRect, paint);
+				} else if (l.get(i) == 3) {
+					c.drawBitmap(lib.get(R.drawable.token_leather_3), TOKEN_RECT, destRect, paint);
+				} else if (l.get(i) == 2) {
+					c.drawBitmap(lib.get(R.drawable.token_leather_2), TOKEN_RECT, destRect, paint);
+				} else {
+					c.drawBitmap(lib.get(R.drawable.token_leather_1), TOKEN_RECT, destRect, paint);
+				}
+				break;
+			}
+			x += dx;
 		}
 	}
 
@@ -182,6 +198,15 @@ public class Drawer {
 				}
 			}
 			x += dx;
+		}
+
+		x += 30;
+		int n = engine.getDeck().size();
+		n = n>5?5:n;
+		for (int i = 0; i < n; i++) {
+			destRect = new Rect(x, y, x + CARD_WIDTH, y + CARD_HEIGHT);
+			c.drawBitmap(lib.get(R.drawable.card_back), CARD_RECT, destRect, paint);
+			x+=5;
 		}
 	}
 
@@ -230,8 +255,24 @@ public class Drawer {
 			y += 130;
 			c.drawText("" + engine.getCurrentPlayer().getnCamels(), x, y, paint);
 		}
+
+		x = X0_HAND;
+		y = 50;
+		int n = 0;
+		if (engine.getToken() == 0) {
+			n = engine.getPlayers()[1].getHand().size();
+		} else {
+			n = engine.getPlayers()[0].getHand().size();
+		}
+
+		for (int i = 0; i < n; i++) {
+			destRect = new Rect(x, y, x + CARD_WIDTH, y + CARD_HEIGHT);
+			c.drawBitmap(lib.get(R.drawable.card_back), CARD_RECT, destRect, paint);
+			x += dx;
+		}
 	}
 
+	// TODO: a faire
 	public void drawButtons(Canvas c) {
 
 	}

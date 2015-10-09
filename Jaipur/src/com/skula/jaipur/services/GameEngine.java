@@ -367,4 +367,12 @@ public class GameEngine {
 	public void setSelCardsMarket(List<Integer> selCardsMarket) {
 		this.selCardsMarket = selCardsMarket;
 	}
+	
+	public int getToken(){
+		return token;
+	}
+	
+	public Player[] getPlayers(){
+		return players;
+	}
 }
