@@ -57,13 +57,13 @@ public class GameEngine {
 			if (c == Card.CAMEL) {
 				players[0].addCamel(1);
 			} else {
-				players[0].addCard(deck.remove(0));
+				players[0].addCard(c);
 			}
 			c = deck.remove(0);
 			if (c == Card.CAMEL) {
 				players[1].addCamel(1);
 			} else {
-				players[1].addCard(deck.remove(0));
+				players[1].addCard(c);
 			}
 		}
 

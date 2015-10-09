@@ -253,7 +253,7 @@ public class Drawer {
 		}
 
 		x = X0_HAND + 7 * dx + 30;
-		if (engine.getCurrentPlayer().getnCamels() > 1) {
+		if (engine.getCurrentPlayer().getnCamels() > 0) {
 			destRect = new Rect(x, Y0_HAND, x + CARD_WIDTH, Y0_HAND + CARD_HEIGHT);
 			c.drawBitmap(lib.get(R.drawable.card_camel), CARD_RECT, destRect, paint);
 
