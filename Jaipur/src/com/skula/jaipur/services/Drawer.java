@@ -13,14 +13,14 @@ import com.skula.jaipur.cnst.PictureLibrary;
 import com.skula.jaipur.enums.Card;
 
 public class Drawer {
-	public static final int X0_TOKEN = 10;
-	public static final int Y0_TOKEN = 100;
+	public static final int X0_TOKEN = 100;
+	public static final int Y0_TOKEN = 120;
 
 	public static final int X0_MARKET = 550;
 	public static final int Y0_MARKET = 350;
 
 	public static final int X0_HAND = 350;
-	public static final int Y0_HAND = 550;
+	public static final int Y0_HAND = 500;
 
 	public static final int CARD_WIDTH = 99;
 	public static final int CARD_HEIGHT = 140;
@@ -39,6 +39,7 @@ public class Drawer {
 	}
 
 	public void draw(Canvas c) {
+		c.drawBitmap(lib.get(R.drawable.background), new Rect(0, 0, 1243, 709), new Rect(0, 0, 1243, 709), paint);
 		drawTokens(c);
 		drawMarket(c);
 		drawPlayers(c);
@@ -51,7 +52,10 @@ public class Drawer {
 		c.drawText("card: " + w + ", " + h, 300, 30, paint);
 		w = lib.get(R.drawable.token_bonus_3).getWidth();
 		h = lib.get(R.drawable.token_bonus_3).getHeight();
-		c.drawText("card: " + w + ", " + h, 300, 70, paint);
+		c.drawText("token: " + w + ", " + h, 300, 70, paint);
+		w = lib.get(R.drawable.background).getWidth();
+		h = lib.get(R.drawable.background).getHeight();
+		c.drawText("background: " + w + ", " + h, 300, 110, paint);
 	}
 
 	private void drawTokens(Canvas c) {

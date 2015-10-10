@@ -51,6 +51,8 @@ public class PictureLibrary{
 		this.map.put(R.drawable.token_bonus_5, BitmapFactory.decodeResource(res, R.drawable.token_bonus_5));
 		
 		this.map.put(R.drawable.token_seal, BitmapFactory.decodeResource(res, R.drawable.token_seal));
+
+		this.map.put(R.drawable.background, BitmapFactory.decodeResource(res, R.drawable.background));
 	}
 
 	public Bitmap get(int id) {
