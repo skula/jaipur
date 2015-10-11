@@ -80,11 +80,12 @@ public class BoardView extends View {
 		
 		// main
 		x = Drawer.X0_HAND;
-		dx = Drawer.CARD_WIDTH + 10;
+		dx = Drawer.CARD_WIDTH * 2 / 3;
 		y = Drawer.Y0_HAND;
 		destRect = null;		
 		for(int i=0; i<engine.getCurrentPlayer().getHand().size(); i++){
-			destRect = new Rect(x, y, x + Drawer.CARD_WIDTH, y + Drawer.CARD_HEIGHT);
+			y = i % 2 == 0 ? Drawer.Y0_HAND - 5 : Drawer.Y0_HAND + 5;
+			destRect = new Rect(x, y, x + dx, y + Drawer.CARD_HEIGHT);
 			if(destRect.contains(xp, yp)){
 				switch (i) {
 				case 0:
@@ -107,7 +108,7 @@ public class BoardView extends View {
 		}
 
 		// chameaux
-		x = Drawer.X0_HAND + 7 * dx + 30;
+		x = Drawer.X0_HAND + (Drawer.CARD_WIDTH * 2 / 3) * 7 + 60;
 		if (engine.getCurrentPlayer().getnCamels() > 1) {
 			// ajouter chameau
 			destRect = new Rect(x, Drawer.Y0_HAND, x + Drawer.CARD_WIDTH, Drawer.Y0_HAND + Drawer.CARD_HEIGHT/2);

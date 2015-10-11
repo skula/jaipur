@@ -13,13 +13,13 @@ import com.skula.jaipur.cnst.PictureLibrary;
 import com.skula.jaipur.enums.Card;
 
 public class Drawer {
-	public static final int X0_TOKEN = 100;
-	public static final int Y0_TOKEN = 120;
+	public static final int X0_TOKEN = 370;
+	public static final int Y0_TOKEN = 130;
 
-	public static final int X0_MARKET = 550;
-	public static final int Y0_MARKET = 350;
+	public static final int X0_MARKET = 450;
+	public static final int Y0_MARKET = 320;
 
-	public static final int X0_HAND = 350;
+	public static final int X0_HAND = 450;
 	public static final int Y0_HAND = 500;
 
 	public static final int CARD_WIDTH = 99;
@@ -45,7 +45,7 @@ public class Drawer {
 		drawPlayers(c);
 		drawButtons(c);
 
-		paint.setColor(Color.RED);
+		/*paint.setColor(Color.RED);
 		paint.setTextSize(33f);
 		int w = lib.get(R.drawable.card_back).getWidth();
 		int h = lib.get(R.drawable.card_back).getHeight();
@@ -55,11 +55,11 @@ public class Drawer {
 		c.drawText("token: " + w + ", " + h, 300, 70, paint);
 		w = lib.get(R.drawable.background).getWidth();
 		h = lib.get(R.drawable.background).getHeight();
-		c.drawText("background: " + w + ", " + h, 300, 110, paint);
+		c.drawText("background: " + w + ", " + h, 300, 110, paint);*/
 	}
 
 	private void drawTokens(Canvas c) {
-		int x = X0_TOKEN;
+		int x = X0_TOKEN - TOKEN_SIZE - engine.getWareTokens().get(0).size() * 20;
 
 		int y = Y0_TOKEN;
 		int dy = TOKEN_SIZE + 10;
@@ -70,13 +70,13 @@ public class Drawer {
 
 		drawTokensColumn(c, x, y, 0, engine.getWareTokens().get(0));
 		y += dy;
-		x = X0_TOKEN;
+		x = X0_TOKEN - TOKEN_SIZE - engine.getWareTokens().get(1).size() * 20;
 		drawTokensColumn(c, x, y, 1, engine.getWareTokens().get(1));
 		y += dy;
-		x = X0_TOKEN;
+		x = X0_TOKEN - TOKEN_SIZE - engine.getWareTokens().get(2).size() * 20;
 		drawTokensColumn(c, x, y, 2, engine.getWareTokens().get(2));
 		y += dy;
-		x = X0_TOKEN;
+		x = X0_TOKEN - 3 * (TOKEN_SIZE + 10) - 10;
 
 		// jetons de bonus
 		if (!engine.getBonusTokens().get(0).isEmpty()) {
@@ -96,13 +96,13 @@ public class Drawer {
 
 		// jetons de marchandises
 		y += dy;
-		x = X0_TOKEN;
+		x = X0_TOKEN - TOKEN_SIZE - engine.getWareTokens().get(3).size() * 20;
 		drawTokensColumn(c, x, y, 3, engine.getWareTokens().get(3));
 		y += dy;
-		x = X0_TOKEN;
+		x = X0_TOKEN - TOKEN_SIZE - engine.getWareTokens().get(4).size() * 20;
 		drawTokensColumn(c, x, y, 4, engine.getWareTokens().get(4));
 		y += dy;
-		x = X0_TOKEN;
+		x = X0_TOKEN - TOKEN_SIZE - engine.getWareTokens().get(5).size() * 20;
 		drawTokensColumn(c, x, y, 5, engine.getWareTokens().get(5));
 	}
 
@@ -207,7 +207,7 @@ public class Drawer {
 			x += dx;
 		}
 
-		x += 30;
+		x += 50;
 		int n = engine.getDeck().size();
 		n = n > 5 ? 5 : n;
 		for (int i = 0; i < n; i++) {
@@ -215,16 +215,23 @@ public class Drawer {
 			c.drawBitmap(lib.get(R.drawable.card_back), CARD_RECT, destRect, paint);
 			x += 5;
 		}
+		paint.setColor(Color.WHITE);
+		paint.setTextSize(40f);
+		x+=30;
+		y += 130;
+		c.drawText("" + engine.getDeck().size(), x, y, paint);
+		
 	}
 
 	private void drawPlayers(Canvas c) {
 		int x = X0_HAND;
-		int dx = CARD_WIDTH + 10;
+		int dx = CARD_WIDTH * 2 / 3;
 		int y = Y0_HAND;
 
 		Rect destRect = null;
 		List<Card> hand = engine.getCurrentPlayer().getHand();
 		for (int i = 0; i < hand.size(); i++) {
+			y = i % 2 == 0 ? Y0_HAND - 5 : Y0_HAND + 5;
 			destRect = new Rect(x, y, x + CARD_WIDTH, y + CARD_HEIGHT);
 			switch (hand.get(i)) {
 			case DIAMANT:
@@ -256,7 +263,7 @@ public class Drawer {
 			x += dx;
 		}
 
-		x = X0_HAND + 7 * dx + 30;
+		x = X0_HAND + (CARD_WIDTH * 2 / 3) * 7 + 60;
 		if (engine.getCurrentPlayer().getnCamels() > 0) {
 			destRect = new Rect(x, Y0_HAND, x + CARD_WIDTH, Y0_HAND + CARD_HEIGHT);
 			c.drawBitmap(lib.get(R.drawable.card_camel), CARD_RECT, destRect, paint);
@@ -265,15 +272,15 @@ public class Drawer {
 				c.drawBitmap(lib.get(R.drawable.card_sel), CARD_RECT, destRect, paint);
 			}
 
-			paint.setColor(Color.BLACK);
+			paint.setColor(Color.WHITE);
 			paint.setTextSize(40f);
-			x += 50;
+			x += 60;
 			y += 130;
 			c.drawText("" + engine.getCurrentPlayer().getnCamels(), x, y, paint);
 		}
 
 		x = X0_HAND;
-		y = 50;
+		y = 100;
 		int n = 0;
 		if (engine.getToken() == 0) {
 			n = engine.getPlayers()[1].getHand().size();
@@ -282,9 +289,10 @@ public class Drawer {
 		}
 
 		for (int i = 0; i < n; i++) {
+			y = i % 2 == 0 ? 75 - 5 : 75 + 5;
 			destRect = new Rect(x, y, x + CARD_WIDTH, y + CARD_HEIGHT);
 			c.drawBitmap(lib.get(R.drawable.card_back), CARD_RECT, destRect, paint);
-			x += dx;
+			x += CARD_WIDTH * 2 / 3;
 		}
 	}
 
