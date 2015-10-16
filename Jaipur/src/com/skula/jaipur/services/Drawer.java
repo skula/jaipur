@@ -21,10 +21,18 @@ public class Drawer {
 
 	public static final int X0_HAND = 450;
 	public static final int Y0_HAND = 500;
+	
+	public static final int X0_BUTTON = 500;
+	public static final int Y0_BUTTON = 250;
 
+	public static final int BUTTON_WIDTH = 99;
+	public static final int BUTTON_HEIGHT = 36;
+	private static final Rect BUTTON_RECT = new Rect(0, 0, BUTTON_WIDTH, BUTTON_HEIGHT);
+	
 	public static final int CARD_WIDTH = 99;
 	public static final int CARD_HEIGHT = 140;
 	private static final Rect CARD_RECT = new Rect(0, 0, CARD_WIDTH, CARD_HEIGHT);
+	
 	public static final int TOKEN_SIZE = 68;
 	private static final Rect TOKEN_RECT = new Rect(0, 0, TOKEN_SIZE, TOKEN_SIZE);
 
@@ -45,7 +53,7 @@ public class Drawer {
 		drawPlayers(c);
 		drawButtons(c);
 
-		/*paint.setColor(Color.RED);
+		paint.setColor(Color.RED);
 		paint.setTextSize(33f);
 		int w = lib.get(R.drawable.card_back).getWidth();
 		int h = lib.get(R.drawable.card_back).getHeight();
@@ -55,7 +63,10 @@ public class Drawer {
 		c.drawText("token: " + w + ", " + h, 300, 70, paint);
 		w = lib.get(R.drawable.background).getWidth();
 		h = lib.get(R.drawable.background).getHeight();
-		c.drawText("background: " + w + ", " + h, 300, 110, paint);*/
+		c.drawText("background: " + w + ", " + h, 300, 110, paint);
+		w = lib.get(R.drawable.btn_buy).getWidth();
+		h = lib.get(R.drawable.btn_buy).getHeight();
+		c.drawText("btn: " + w + ", " + h, 300, 160, paint);
 	}
 
 	private void drawTokens(Canvas c) {
@@ -298,20 +309,31 @@ public class Drawer {
 
 	// TODO: a faire
 	public void drawButtons(Canvas c) {
+		int x = X0_BUTTON;
+		int y = Y0_BUTTON;
+		Rect destRect = null;
+		
 		if (!engine.isEndOfTurn()) {
 			if (engine.canBuy()) {
-
+				destRect = new Rect(x, y, x + BUTTON_WIDTH, y + BUTTON_HEIGHT);
+				c.drawBitmap(lib.get(R.drawable.btn_buy), BUTTON_RECT, destRect, paint);
 			}
-
-			if (engine.canSale()) {
-
-			}
-
+			
+			x += BUTTON_WIDTH + 20;
 			if (engine.canTrade()) {
+				destRect = new Rect(x, y, x + BUTTON_WIDTH, y + BUTTON_HEIGHT);
+				c.drawBitmap(lib.get(R.drawable.btn_trade), BUTTON_RECT, destRect, paint);
+			}
 
+			x += BUTTON_WIDTH + 20;
+			if (engine.canSale()) {
+				destRect = new Rect(x, y, x + BUTTON_WIDTH, y + BUTTON_HEIGHT);
+				c.drawBitmap(lib.get(R.drawable.btn_sale), BUTTON_RECT, destRect, paint);
 			}
 		} else {
-
+			x += BUTTON_WIDTH + 20;
+			destRect = new Rect(x, y, x + BUTTON_WIDTH, y + BUTTON_HEIGHT);
+			c.drawBitmap(lib.get(R.drawable.btn_play), BUTTON_RECT, destRect, paint);
 		}
 	}
 }

@@ -123,6 +123,39 @@ public class BoardView extends View {
 		}
 		
 		// boutons
+		x = Drawer.X0_BUTTON;
+		y = Drawer.Y0_BUTTON;
+		
+		if (!engine.isEndOfTurn()) {
+			if (engine.canBuy()) {
+				destRect = new Rect(x, y, x + Drawer.BUTTON_WIDTH, y + Drawer.BUTTON_HEIGHT);
+				if(destRect.contains(xp, yp)){
+					return Cnst.AREA_BTN_BUY;
+				}
+			}
+			
+			x += Drawer.BUTTON_WIDTH + 20;
+			if (engine.canTrade()) {
+				destRect = new Rect(x, y, x + Drawer.BUTTON_WIDTH, y + Drawer.BUTTON_HEIGHT);
+				if(destRect.contains(xp, yp)){
+					return Cnst.AREA_BTN_TRADE;
+				}
+			}
+
+			x += Drawer.BUTTON_WIDTH + 20;
+			if (engine.canSale()) {
+				destRect = new Rect(x, y, x + Drawer.BUTTON_WIDTH, y + Drawer.BUTTON_HEIGHT);
+				if(destRect.contains(xp, yp)){
+					return Cnst.AREA_BTN_SALE;
+				}
+			}
+		} else {
+			x += Drawer.BUTTON_WIDTH + 20;
+			destRect = new Rect(x, y, x + Drawer.BUTTON_WIDTH, y + Drawer.BUTTON_HEIGHT);
+			if(destRect.contains(xp, yp)){
+				return Cnst.AREA_BTN_PLAY;
+			}
+		}
 		
 		return Cnst.AREA_NONE;
 	}

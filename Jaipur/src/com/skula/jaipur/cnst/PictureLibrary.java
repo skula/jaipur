@@ -53,6 +53,11 @@ public class PictureLibrary{
 		this.map.put(R.drawable.token_seal, BitmapFactory.decodeResource(res, R.drawable.token_seal));
 
 		this.map.put(R.drawable.background, BitmapFactory.decodeResource(res, R.drawable.background));
+		
+		this.map.put(R.drawable.btn_buy, BitmapFactory.decodeResource(res, R.drawable.btn_buy));
+		this.map.put(R.drawable.btn_trade, BitmapFactory.decodeResource(res, R.drawable.btn_trade));
+		this.map.put(R.drawable.btn_sale, BitmapFactory.decodeResource(res, R.drawable.btn_sale));
+		this.map.put(R.drawable.btn_play, BitmapFactory.decodeResource(res, R.drawable.btn_play));
 	}
 
 	public Bitmap get(int id) {
