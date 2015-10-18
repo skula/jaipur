@@ -240,6 +240,15 @@ public class GameEngine {
 		default:
 			break;
 		}
+		
+		// on retire les cartes de la main
+		List<Card> tmpl = new ArrayList<Card>();
+		for(int i =0; i<players[token].getHand().size(); i++){
+			if(!selCardsHand.contains(i)){
+				tmpl.add(players[token].getHand().get(i));
+			}
+		}
+		players[token].changeHand(tmpl);
 
 		// prendre jetons marchandises
 		int tmp = wareTokens.get(ware).size() < n ? wareTokens.get(ware).size() : n;
@@ -333,8 +342,6 @@ public class GameEngine {
 	}
 
 	private void nextPlayer() {
-		selCardsHand.clear();
-		selCardsMarket.clear();
 		selCamels = 0;
 		endOfTurn = false;
 
@@ -461,14 +468,20 @@ public class GameEngine {
 			break;
 		case Cnst.AREA_BTN_SALE:
 			sale();
+			selCardsHand.clear();
+			selCardsMarket.clear();
 			endOfTurn = true;
 			break;
 		case Cnst.AREA_BTN_TRADE:
 			trade();
+			selCardsHand.clear();
+			selCardsMarket.clear();
 			endOfTurn = true;
 			break;
 		case Cnst.AREA_BTN_BUY:
 			buy();
+			selCardsHand.clear();
+			selCardsMarket.clear();
 			endOfTurn = true;
 			break;
 		case Cnst.AREA_BTN_PLAY:

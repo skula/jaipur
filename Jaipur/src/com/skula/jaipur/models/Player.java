@@ -31,6 +31,12 @@ public class Player {
 	public void addCard(Card card) {
 		this.hand.add(card);
 	}
+	
+
+	public void changeHand(List<Card> l) {
+		this.hand.clear();
+		this.hand.addAll(l);
+	}
 
 	public Card removeCard(int i) {
 		return hand.remove(i);
