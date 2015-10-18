@@ -343,7 +343,6 @@ public class GameEngine {
 
 	private void nextPlayer() {
 		selCamels = 0;
-		endOfTurn = false;
 
 		token = token == 0 ? 1 : 0;
 
@@ -471,21 +470,24 @@ public class GameEngine {
 			selCardsHand.clear();
 			selCardsMarket.clear();
 			endOfTurn = true;
+			nextPlayer();
 			break;
 		case Cnst.AREA_BTN_TRADE:
 			trade();
 			selCardsHand.clear();
 			selCardsMarket.clear();
 			endOfTurn = true;
+			nextPlayer();
 			break;
 		case Cnst.AREA_BTN_BUY:
 			buy();
 			selCardsHand.clear();
 			selCardsMarket.clear();
 			endOfTurn = true;
+			nextPlayer();
 			break;
 		case Cnst.AREA_BTN_PLAY:
-			nextPlayer();
+			endOfTurn = false;
 			break;
 		default:
 			break;
