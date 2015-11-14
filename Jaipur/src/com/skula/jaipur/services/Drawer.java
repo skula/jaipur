@@ -53,6 +53,10 @@ public class Drawer {
 		drawPlayers(c);
 		drawButtons(c);
 
+		//drawLog(c);
+	}
+	
+	private void drawLog(Canvas c){
 		paint.setColor(Color.RED);
 		paint.setTextSize(33f);
 		int w = lib.get(R.drawable.card_back).getWidth();
@@ -289,6 +293,9 @@ public class Drawer {
 
 				if (engine.getSelCamels() > 0) {
 					c.drawBitmap(lib.get(R.drawable.card_sel), CARD_RECT, destRect, paint);
+					paint.setColor(Color.RED);
+					paint.setTextSize(40f);
+					c.drawText("(" + engine.getSelCamels() + ")", x+100, y+130, paint);
 				}
 
 				paint.setColor(Color.WHITE);
@@ -316,7 +323,6 @@ public class Drawer {
 		}
 	}
 
-	// TODO: a faire
 	public void drawButtons(Canvas c) {
 		int x = X0_BUTTON;
 		int y = Y0_BUTTON;
